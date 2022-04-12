@@ -19,6 +19,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         )
         
         event = lacework_client.events.get(event_id).get('data', [{}])[0]
+        event = dict((k.lower(), v) for k,v in event.items())
         return event
 
 
