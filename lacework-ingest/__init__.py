@@ -8,14 +8,15 @@ from laceworksdk import LaceworkClient
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
 
-    def get_event(event_id, account, api_key, api_secret):
+    def get_event(event_id, api_key, api_secret, account, subaccount=None):
         logging.info('{0} tenant event {1} received'.format(account, event_id))
         logging.info('Creating Lacework client')
 
         lacework_client = LaceworkClient(
             api_key=api_key,
             api_secret=api_secret,
-            account=account
+            account=account,
+            subaccount=subaccount
         )
         
         event = lacework_client.events.get(event_id).get('data', [{}])[0]
@@ -33,7 +34,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     API_KEY = os.getenv("LW_API_KEY")
     API_SECRET = os.getenv("LW_API_SECRET")
-    ACCOUNT = req_body.get("lacework_account")
+    ACCOUNT = os.getenv("LW_ACCOUNT")
+    SUBACCOUNT = req_body.get("lacework_account")
     HEADERS = { 'Content-Type': 'application/json'}
 
     if not EVENT_ID:
@@ -47,5 +49,5 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         logging.info('Lacework test event received')
         return func.HttpResponse(body=json.dumps(req_body), headers=HEADERS)
 
-    RESPONSE = get_event(EVENT_ID, ACCOUNT, API_KEY, API_SECRET)
+    RESPONSE = get_event(EVENT_ID, API_KEY, API_SECRET, ACCOUNT, SUBACCOUNT)
     return func.HttpResponse(body=json.dumps(RESPONSE), headers=HEADERS)
