@@ -33,7 +33,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     API_KEY = os.getenv("LW_API_KEY")
     API_SECRET = os.getenv("LW_API_SECRET")
-    ACCOUNT = os.getenv("LW_ACCOUNT")
+    ACCOUNT = req_body.get("lacework_account")
     HEADERS = { 'Content-Type': 'application/json'}
 
     if not EVENT_ID:
