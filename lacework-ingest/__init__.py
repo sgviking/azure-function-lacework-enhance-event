@@ -19,7 +19,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             subaccount=subaccount
         )
         
-        alert = lacework_client.alerts.get_details(alert_id, "Details").get('data', [{}])
+        alert = lacework_client.alerts.get_details(alert_id, "Details").get('data', {})
         alert = dict((k.lower(), v) for k,v in alert.items())
         return alert
 
