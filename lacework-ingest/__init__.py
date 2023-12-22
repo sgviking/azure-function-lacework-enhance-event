@@ -36,6 +36,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     ACCOUNT = os.getenv("LW_ACCOUNT")
     SUBACCOUNT = req_body.get("lacework_account")
     HEADERS = { 'Content-Type': 'application/json'}
+    ALERT_LINK = "https://{0}.lacework.net/ui/investigation/monitor/AlertInbox/{1}/details?accountName={2}".format(ACCOUNT, ALERT_ID, SUBACCOUNT)
 
     if not API_KEY and not API_SECRET and not ACCOUNT:
         logging.info('Set the LW_ACCOUNT, LW_API_SECRET, and LW_API_KEY environmental variables.}')
@@ -56,6 +57,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(body=json.dumps(req_body), headers=HEADERS)
 
     RESPONSE = get_alert(ALERT_ID, API_KEY, API_SECRET, ACCOUNT, SUBACCOUNT)
-    RESPONSE['event_link'] = req_body['event_link']
-    RESPONSE['lacework_account'] = SUBACCOUNT
+    RESPONSE.update( (('lw_account', ACCOUNT), ('alert_url', ALERT_LINK) , ('lw_subaccount', SUBACCOUNT)) )
+
     return func.HttpResponse(body=json.dumps(RESPONSE), headers=HEADERS)
