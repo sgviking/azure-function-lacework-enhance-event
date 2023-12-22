@@ -56,4 +56,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(body=json.dumps(req_body), headers=HEADERS)
 
     RESPONSE = get_alert(ALERT_ID, API_KEY, API_SECRET, ACCOUNT, SUBACCOUNT)
+    RESPONSE['event_link'] = req_body['event_link']
+    RESPONSE['lacework_account'] = SUBACCOUNT
     return func.HttpResponse(body=json.dumps(RESPONSE), headers=HEADERS)
